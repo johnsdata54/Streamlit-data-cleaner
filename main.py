@@ -8,7 +8,7 @@ st.subheader("The intention of the program is to eliminate duplicates, emtpty va
 
 # sample data generated from chatgpt to test functionality
 # Sample data
-names = ['Alice', 'Bob', 'Charlie', 'David']
+names = ['Alice', 'Bob', 'Charlie', 'David', 'Thomas', 'Tatum', 'Kayla', 'Simone', 'Jack']
 ages = [random.randint(20, 30) for _ in range(len(names))]
 scores = [random.uniform(60, 100) for _ in range(len(names))]
 
@@ -18,9 +18,33 @@ df = pd.DataFrame(data)
 
 uploaded_file = st.file_uploader("Upload a file")
 
-if uploaded_file is None:
+if uploaded_file is not None:
     pass
 else:
+
+
+    #count of nan values per column
+
+    #Check yes or no if person would like to remove NA/NAN values
+
+    #if yes save df to new variable, else pass orgginal to new variable
+
+    dataframe_select = st.selectbox("Select preview amount for data frame", options = [5, 10, 15])
+
+    #saving data to dataframe
+    df = pd.DataFrame(data)
+
+    #this presents head of the data sheet
+    st.write("Preview data head")
+    head = df.head(dataframe_select)
+    st.dataframe(head)
+
+    #this presents tail of the data sheet
+    st.write("Preview data tail")
+    tail = df.tail(dataframe_select)
+    st.dataframe(tail)
+
+
 
     df_type = st.selectbox("Please select file input", ["SQL Database", "Excel Spreadsheet", "CSV" ])
 
