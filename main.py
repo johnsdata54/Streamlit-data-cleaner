@@ -4,30 +4,29 @@ import random
 
 
 st.header("Data cleaner:")
-st.subheader("The intention of the program is to eliminate duplicates, emtpty values, and optional remove columns")
+st.subheader("The intention of the program is to eliminate duplicates, empty values, and optionally remove columns")
 
 # sample data generated from chatgpt to test functionality
+
 # Sample data
-names = ['Alice', 'Bob', 'Charlie', 'David', 'Thomas', 'Tatum', 'Kayla', 'Simone', 'Jack']
+names = ['Alice', 'Bob', 'Charlie', 'David', 'David', 'Tatum', 'Kayla', 'Simone', 'Jack']
 ages = [random.randint(20, 30) for _ in range(len(names))]
 scores = [random.uniform(60, 100) for _ in range(len(names))]
 
 # Creating a DataFrame
 data = {'Name': names, 'Age': ages, 'Score': scores}
+
 df = pd.DataFrame(data)
 
 uploaded_file = st.file_uploader("Upload a file")
 
-if uploaded_file is not None:
+data = pd.read_csv(uploaded_file)
+
+df = pd.DataFrame(data)
+
+if uploaded_file is None:
     pass
 else:
-
-
-    #count of nan values per column
-
-    #Check yes or no if person would like to remove NA/NAN values
-
-    #if yes save df to new variable, else pass orgginal to new variable
 
     dataframe_select = st.selectbox("Select preview amount for data frame", options = [5, 10, 15])
 
@@ -44,19 +43,39 @@ else:
     tail = df.tail(dataframe_select)
     st.dataframe(tail)
 
+    st.header("Would you like to remove duplicates?")
 
+    duplicates = df.duplicated()
 
-    df_type = st.selectbox("Please select file input", ["SQL Database", "Excel Spreadsheet", "CSV" ])
+    num_duplicates = duplicates.sum()
 
-    if df_type == "SQL Database":
-        st.write("1")
-    elif df_type == "Excel Spreadsheet":
-        st.write("2")
-    elif df_type == "CSV":
-        st.write("3")
+    st.write(f"The number of duplicates: {num_duplicates}")
+
+   
+    if num_duplicates == 0:
+        decision = None
+    else:
+
+        decision = st.checkbox(f"Would you like to remove the duplicated entries from the data set")
+
+        backup_df_1 = df
+
+        if decision:
+            df = df.drop_duplicates()
+        else:
+            df = backup_df_1
+
+    st.header("Would you like to remove Null/NaN values?")
+
+    #na_counts = df.groupby('Name')['value'].apply(lambda x: x.isna().sum())
+
+    st.write("The number of null values per attribute: {} ")
+
+    st.header("Would you like to remove columns?")
+
+    
 
     #All code under this comment -- functionality of what is written needs to be shown after a table of data has been uploaded
-
 
     list_columns = []
 
@@ -65,13 +84,11 @@ else:
 
     st.write("Please select columns to discard")
 
-    st.multiselect("Column names available", options = list_columns)
+    columns_del = st.multiselect("Column names available", options = list_columns)
 
+    st.write(columns_del)
     #All code under this comment -- functionality of what is written needs to be shown after a table of data has been uploaded
 
-
     output = st.selectbox("Please select file output", ["SQL Database", "Excel Spreadsheet", "CSV" ])
-
-
 
     #st.download_button(label = f"Click to {output}", data = None)
