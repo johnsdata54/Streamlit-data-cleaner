@@ -39,39 +39,54 @@ else:
     tail = df.tail(dataframe_select)
     st.dataframe(tail)
 
-    st.header("Would you like to remove duplicates?")
-
     duplicates = df.duplicated()
 
     num_duplicates = duplicates.sum()
 
-    st.write(f"The number of duplicates: {num_duplicates}")
+    if num_duplicates == 0:
 
-    dup_decision = st.checkbox("Yes?", key = 1)
-
-    if dup_decision:
-            
-        if num_duplicates == 1:
-            decision = None
-        else:
-
-            decision = st.checkbox(f"Would you like to remove the duplicated entries from the data set")
-
-            backup_df_1 = df
-
-            if decision:
-                df = df.drop_duplicates()
-            else:
-                df = backup_df_1
-    else:
+        st.success("You have no duplicates.")
         pass
-    
-    st.header("Would you like to remove Null/NaN values?")
-    
+    else:
+
+        st.header("Would you like to remove duplicates?")
+
+        st.write(f"The number of duplicates: {num_duplicates}")
+
+        dup_decision = st.checkbox("Yes?", key = 1)
+
+        if dup_decision:
+                
+            if num_duplicates == 1:
+                decision = None
+            else:
+
+                decision = st.checkbox(f"Would you like to remove the duplicated entries from the data set")
+
+                backup_df_1 = df
+
+                if decision:
+                    df = df.drop_duplicates()
+                else:
+                    df = backup_df_1
+        else:
+            pass
+
     #na_counts = df.groupby('Name')['value'].apply(lambda x: x.isna().sum())
+        
+    na_counts = 0
 
-    st.write("The number of null values per attribute: {} ")
+    if na_counts == 0:
 
+        st.success("You have no Null values.")
+    else:
+        st.header("Would you like to remove Null/NaN values?")
+        
+        #na_counts = df.groupby('Name')['value'].apply(lambda x: x.isna().sum())
+
+        st.write(f"The number of null values per attribute: {num_duplicates} ")
+
+    
     st.header("Would you like to remove columns?")
 
 
@@ -103,11 +118,44 @@ else:
         pass
 
 
+    final_df = df
     
-    #All code under this comment -- functionality of what is written needs to be shown after a table of data has been uploaded
+    #Output selection for the type of conversion that wants to happen to the dataframe
 
     output = st.selectbox("Please select file output", ["Database", "Excel Spreadsheet", "CSV" ])
 
+    if output == "Excel Spreadsheet":
+
+
+
+        file_name = st.text_input("Please name the file")
+
+        excel_down = final_df.to_excel(f"{file_name}.xlsx")
+
+        st.download_button(data=excel_down)
+    elif output == "Database":
+
+
+
+        file_name = st.text_input("Please name the file")
+
+        if file_name is None:
+            pass
+        else:
+
+            excel_down = final_df.to_excel(sheet_name=file_name)
+
+            st.download_button(excel_down)
+
+    elif output == "CSV":
+
+
+
+        file_name = st.text_input("Please name the file")
+
+        excel_down = final_df.to_excel(sheet_name=file_name)
+
+        st.download_button(excel_down)
 
 
  
