@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import os
 import io
 
 def handle_duplicates(df):
@@ -109,7 +108,7 @@ def handle_file_output(final_df):
             st.download_button(
                 data=buffer.getvalue(),
                 label=f'Download {file_name}.xlsx',
-                file_name=file_name
+                file_name=file_name+'.xlsx'
             )
         elif final_df.empty:
             st.warning("DataFrame is empty. Provide non-empty data for Excel export.")
